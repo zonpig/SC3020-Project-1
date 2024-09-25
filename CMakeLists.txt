@@ -3,4 +3,6 @@ project(SC3020_Project_1)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(SC3020_Project_1 main.cpp)
+add_executable(SC3020_Project_1 main.cpp
+        Record.cpp
+        Record.h)
