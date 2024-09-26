@@ -9,4 +9,9 @@ add_executable(SC3020_Project_1 main.cpp
         Block.cpp
         Block.h
         Address.cpp
-        Address.h)
+        Address.h
+        Disk.cpp
+        Disk.h
+        )
+#        Node.cpp
+#        Node.h)
