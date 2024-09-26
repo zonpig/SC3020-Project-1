@@ -6,6 +6,8 @@ To figure out the block size setting of your computer, run the following command
 diskutil info /
 ```
 
+For Macbook Pro M1, the block size is 4096 Bytes
+
 ## Goal
 ### (1) Task 1: Design and implement the storage component based on the settings described in Part 1 and store the data (which is about NBA games and will be described in Part 4).
 - Describe the content of a record, a block, and a database file;

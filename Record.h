@@ -8,9 +8,9 @@
 #include <iostream>
 #include <string>
 
-class Record {
+class Record { // 24 + 8 + 2 + 4 + 4 + 4 + 2 + 2 + 1 = 51 //Should try to find C++ memory alignment
 private:
-    std::string GAME_DATE_EST; // Right now is 24 bytes, can look to remove "/" and store it as an long int (4 bytes)
+    std::string GAME_DATE_EST; // Right now is 24 bytes, can look to remove "/" and store it as a long int (4 bytes)
     long long TEAM_ID_home; // Right now is 8 bytes, but can be 4 bytes (long int)
     short PTS_home; // Right now is 2 bytes, but can be 1 byte as max team points in a game is 186
     float FG_PCT_home; // 4 bytes
