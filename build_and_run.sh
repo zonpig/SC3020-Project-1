@@ -2,8 +2,6 @@
 
 # Check if the build directory exists
 if [ ! -d "build" ]; then
-    echo "Build directory does not exist. Creating and compiling..."
-
     # Step 1: Create build directory
     mkdir build
 
@@ -11,17 +9,21 @@ if [ ! -d "build" ]; then
     javac -d build *.java
 
     # Step 3: Change directory to the build folder
-    cd build
+    cd build || exit
 
     # Step 4: Package the classes into a jar file
-    jar cvf project1.jar *
+    jar cvf grp11_project1.jar *
 
     # Step 5: Copy the games.txt file to the build folder
     cp ../games.txt .
 
 else
-    echo "Build directory exists. Skipping compilation..."
-    cd build
+    javac -d build *.java
+
+    cd build || exit
+
+    jar cvf grp11_project1.jar *
+
 fi
 
 # Step 6: Run the Main class from the jar file

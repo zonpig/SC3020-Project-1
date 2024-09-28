@@ -48,15 +48,11 @@ public class Main {
             scanner.close();
           
             lines();
-            experiment1();
+            task1();
             lines();
-            experiment2();
+            task2();
             lines();
-            experiment3();
-            lines();
-            experiment4();
-            lines();
-            experiment5();
+            task3();
             lines();
 
         } catch (FileNotFoundException | NumberFormatException e) {
@@ -73,8 +69,8 @@ public class Main {
         System.out.println("========================================================================");
     }
 
-    public static void experiment1() {
-        System.out.println("~~~~~EXPERIMENT 1~~~~~");
+    public static void task1() {
+        System.out.println("~~~~~TASK 1~~~~~");
         System.out.println("Storing data on disk...");
         System.out.println("Number of records: " + numRecords);
         System.out.println("Size of a record: " + Block.RECORD_SIZE);
@@ -82,8 +78,8 @@ public class Main {
         System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
     }
 
-    public static void experiment2() {
-        System.out.println("~~~~~EXPERIMENT 2~~~~~");
+    public static void task2() {
+        System.out.println("~~~~~TASK 2~~~~~");
         System.out.println("Building B+ tree on attribute 'FG_PCT_home'...");
         System.out.println("The parameter n of the B+ tree is: " + Node.n);
         System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
@@ -92,43 +88,11 @@ public class Main {
         bplustree.rootNodeContent();
     }
 
-    public static void experiment3() {
-        System.out.println("~~~~~EXPERIMENT 3~~~~~");
-        System.out.println("Retrieving records with 'FG_PCT_home equal to 0.5...'");
-        float key = 0.5f;
-        long start = System.nanoTime();
-        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", bplustree.searchQuery(key));
-        long end = System.nanoTime();
-        System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
-
-        System.out.println();
-        System.out.println("### BRUTE FORCE SCANNING ###");
-        Set<Block> blocks = disk.getBlockSet();
-        int blocksAccessed = 0;
-        int numRecords = 0;
-        float resultSum = 0;
-        start = System.nanoTime();
-        for(Block block : blocks) {
-            for(Record record : block.getRecords()) {
-                if(record != null && record.getFg_pct_home() == 0.5f) {
-                    numRecords++; // numRecords++ to simulate reading the record
-                    resultSum += record.getFg3_pct_home();
-                }
-            }
-            blocksAccessed++;
-        }
-        end = System.nanoTime();
-        System.out.println("Num records found: " + numRecords);
-        System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
-        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", resultSum/numRecords);
-        System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
-    }
-
-    public static void experiment4(){
-        System.out.println("~~~~~EXPERIMENT 4~~~~~");
-        System.out.println("Retrieving records with 'FG_PCT_home' between 0.6 and 1 inclusively...");
-        float lowerKey = 0.6f;
-        float upperKey = 1f;
+    public static void task3(){
+        System.out.println("~~~~~Task 3~~~~~");
+        System.out.println("Retrieving records with 'FG_PCT_home' between 0.5 and 0.8 inclusively...");
+        float lowerKey = 0.5f;
+        float upperKey = 0.8f;
 
         long start = System.nanoTime();
         System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", bplustree.rangeQuery(lowerKey, upperKey));
@@ -160,44 +124,5 @@ public class Main {
         System.out.println("Running time of brute force scan in nanoseconds: "+ (end-start));
 
     }
-
-    // delete all records below 0.35 inclusively
-    public static void experiment5() {
-        System.out.println("~~~~~EXPERIMENT 5~~~~~");
-
-        long start = System.nanoTime();
-        while(bplustree.deleteRecord((float) 0.35, disk)){
-            // continue;
-            // bplustree.enumerateNodes();
-        }
-        long end = System.nanoTime();
-
-        System.out.println("After deleting records with attribute 'FG_PCT_home' below 0.35 inclusively...");
-        System.out.println("The parameter n of the B+ tree is: " + Node.n);
-        System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
-        System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
-        System.out.println("The content of the root node (only the keys) is:");
-        bplustree.rootNodeContent();
-        System.out.println("Running time of the deleting process in nanoseconds: " + (end - start));
-
-        System.out.println();
-        System.out.println("### BRUTE FORCE SCANNING ###");
-        Set<Block> blocks = disk.getBlockSet();
-        int blocksAccessed = 0;
-        int numRecords = 0;
-        
-        start = System.nanoTime();
-        for(Block block : blocks) {
-            for(Record record : block.getRecords()) {
-                if(record != null && record.getFg_pct_home() <= 0.35) numRecords++; // numRecords++ to simulate deletion operation
-            }
-            blocksAccessed++;
-        }
-        end = System.nanoTime();
-
-        System.out.println("Number of records deleted: " + numRecords);
-        System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
-        System.out.println("Running time of brute force scan in nanoseconds: " + (end - start));
-    }
-
+    
 }
