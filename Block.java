@@ -44,10 +44,14 @@ public class Block {
     public boolean isFull() {
         if (availIndex.size() == 0)
             return true;
+        if (availIndex.size() == 0)
+            return true;
         return false;
     }
 
     public boolean isEmpty() {
+        if (availIndex.size() == MAX_NUM_RECORDS)
+            return true;
         if (availIndex.size() == MAX_NUM_RECORDS)
             return true;
         return false;
