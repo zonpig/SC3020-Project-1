@@ -1,52 +1,58 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
-    private static Disk disk = new Disk();
+    private static Disk disk;
     private static int numRecords = 0;
     private static BPlusTree bplustree = new BPlusTree();
+
     public static void main(String[] arg) {
+
         // Define the file path
         String filePath = "games.txt";
-
         try {
+            disk = new Disk("database.bin");
             Scanner scanner = new Scanner(new File(filePath));
             scanner.nextLine();
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                
+
                 // Split the line into individual values using tab as the delimiter
                 String[] values = line.split("\t");
 
-                if (!values[0].equals("") && !values[1].equals("") && !values[2].equals("") 
-                && !values[3].equals("") && !values[4].equals("") && !values[5].equals("") 
-                && !values[6].equals("") && !values[7].equals("") && !values[8].equals("")) { // ignore rows with empty values
+                if (!values[0].equals("") && !values[1].equals("") && !values[2].equals("")
+                        && !values[3].equals("") && !values[4].equals("") && !values[5].equals("")
+                        && !values[6].equals("") && !values[7].equals("") && !values[8].equals("")) { // ignore rows
+                                                                                                      // with empty
+                                                                                                      // values
                     // Extract and store individual values in variables
                     String dateStr = values[0].replace("/", ""); // Remove slashes
                     int date = Integer.parseInt(dateStr);
                     int team_id_home = Integer.parseInt(values[1]);
-                    short pts_home = (short)Integer.parseInt(values[2]);
+                    short pts_home = (short) Integer.parseInt(values[2]);
                     float fg_pct_home = Float.parseFloat(values[3]);
                     float ft_pct_home = Float.parseFloat(values[4]);
                     float fg3_pct_home = Float.parseFloat(values[5]);
-                    byte ast_home = (byte)Integer.parseInt(values[6]);
-                    byte reb_home = (byte)Integer.parseInt(values[7]);
-                    byte home_team_wins = (byte)Integer.parseInt(values[8]);
+                    byte ast_home = (byte) Integer.parseInt(values[6]);
+                    byte reb_home = (byte) Integer.parseInt(values[7]);
+                    byte home_team_wins = (byte) Integer.parseInt(values[8]);
 
-                    Record newRecord = new Record(date, team_id_home, pts_home, fg_pct_home, ft_pct_home, fg3_pct_home, ast_home, reb_home, home_team_wins);
+                    Record newRecord = new Record(date, team_id_home, pts_home, fg_pct_home, ft_pct_home, fg3_pct_home,
+                            ast_home, reb_home, home_team_wins);
                     Address address = disk.insertRecord(newRecord);
                     bplustree.insertRecord(address);
 
                     numRecords++;
                 }
             }
-
             // Close the scanner
             scanner.close();
-          
+
             lines();
             task1();
             lines();
@@ -60,8 +66,9 @@ public class Main {
 
             System.out.println(e.getMessage());
             System.out.println("record number: " + numRecords);
+        } catch (IOException e) {
+            System.err.println("An error occurred: " + e.getMessage());
         }
-        
 
     }
 
@@ -88,16 +95,17 @@ public class Main {
         bplustree.rootNodeContent();
     }
 
-    public static void task3(){
+    public static void task3() {
         System.out.println("~~~~~Task 3~~~~~");
         System.out.println("Retrieving records with 'FG_PCT_home' between 0.5 and 0.8 inclusively...");
         float lowerKey = 0.5f;
         float upperKey = 0.8f;
 
         long start = System.nanoTime();
-        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", bplustree.rangeQuery(lowerKey, upperKey));
+        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n",
+                bplustree.rangeQuery(lowerKey, upperKey));
         long end = System.nanoTime();
-        System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
+        System.out.println("Running time of retrieval process in nanoseconds: " + (end - start));
 
         System.out.println();
         System.out.println("### BRUTE FORCE SCANNING ###");
@@ -107,9 +115,9 @@ public class Main {
         float resultSum = 0;
 
         start = System.nanoTime();
-        for(Block block : blocks) {
-            for(Record record : block.getRecords()) {
-                if(record != null && record.getFg_pct_home() >= lowerKey && record.getFg_pct_home() <= upperKey) {
+        for (Block block : blocks) {
+            for (Record record : block.getRecords()) {
+                if (record != null && record.getFg_pct_home() >= lowerKey && record.getFg_pct_home() <= upperKey) {
                     numRecords++; // numRecords++ to simulate reading the record
                     resultSum += record.getFg3_pct_home();
                 }
@@ -119,10 +127,10 @@ public class Main {
         end = System.nanoTime();
 
         System.out.println("Num records found: " + numRecords);
-        System.out.println("Number of blocks accessed by brute-force linear scan method: "+ blocksAccessed);
-        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", resultSum/numRecords);
-        System.out.println("Running time of brute force scan in nanoseconds: "+ (end-start));
+        System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
+        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", resultSum / numRecords);
+        System.out.println("Running time of brute force scan in nanoseconds: " + (end - start));
 
     }
-    
+
 }
