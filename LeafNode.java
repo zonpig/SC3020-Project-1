@@ -192,7 +192,7 @@ public class LeafNode extends Node {
                         scannedBlocks.add(block);
                         resultSum += record.getFg3_pct_home();
                         numRecords++;    
-                        System.out.println(record.getFg_pct_home());
+                        // System.out.println(record.getFg_pct_home());
                     }            
                     continue;
                 } else if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] > upperKey) {
