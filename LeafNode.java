@@ -163,7 +163,7 @@ public class LeafNode extends Node {
         }
     }
 
-    public float searchQuery(float key) {
+    public float rangeQuery(float lowerKey, float upperKey) {
         boolean resultFound = false;
         float resultSum = 0;
         float result;
@@ -175,30 +175,39 @@ public class LeafNode extends Node {
         List<Address> addresses;
         Set<Block> scannedBlocks = new HashSet<>();
 
+        boolean exceeded = false; // check if exceeded upperKey already
+        LeafNode current = this;
         int numRecords = 0;
-        // Search for records with the specified key
-        for (int i = 0; i < n; i++) {
 
-            if (keys[i] != Float.MAX_VALUE && keys[i] == key) {
-                resultFound = true;
-                addresses = dataPointers[i];
-                for (Address address : addresses) {
-                    block = address.getBlock();
-                    index = address.getIndex();
-                    record = block.getRecords()[index];
-                    scannedBlocks.add(block);
-                    resultSum += record.getFg3_pct_home();  
-                    numRecords++;                
+        // Search for records with the key >= lowerKey and <= upperKey
+        while(!exceeded){
+            for (int i = 0; i < n; i++) {            
+                if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] >= lowerKey && current.getKeys()[i] <= upperKey ) {
+                    resultFound = true;
+                    addresses = current.getDataPointers()[i];
+                    for (Address address : addresses) {
+                        block = address.getBlock();
+                        index = address.getIndex();
+                        record = block.getRecords()[index];
+                        scannedBlocks.add(block);
+                        resultSum += record.getFg3_pct_home();
+                        numRecords++;    
+                        System.out.println(record.getFg_pct_home());
+                    }            
+                    continue;
+                } else if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] > upperKey) {
+                    System.out.println("current key is " + current.getKeys()[i]);
+                    System.out.println("Upper limit exceeded!");
+                    exceeded = true;
+                    break; // Since keys are sorted, no more matching keys will be found
                 }
-
-                System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
-                System.out.printf("No. of records found: %d\n", (int) numRecords);
-
-                break;
-            } else if (keys[i] > key) {
-                break; // Since keys are sorted, no more matching keys will be found
             }
+            current = (LeafNode) current.getNextLeafNode();
+            if(current == null) break;
         }
+
+        System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
+        System.out.printf("No. of records found: %d\n", (int) numRecords);
 
         //key not found
         if (!resultFound) {
@@ -208,62 +217,6 @@ public class LeafNode extends Node {
         result = resultSum / numRecords;
 
         return result;
-
-    }
-
-    public float rangeQuery(float lowerKey, float upperKey) {
-                boolean resultFound = false;
-                float resultSum = 0;
-                float result;
-        
-                Block block;
-                int index;
-                Record record;
-        
-                List<Address> addresses;
-                Set<Block> scannedBlocks = new HashSet<>();
-        
-                boolean exceeded = false; // check if exceeded upperKey already
-                LeafNode current = this;
-                int numRecords = 0;
-
-                // Search for records with the key >= lowerKey and <= upperKey
-                while(!exceeded){
-                    for (int i = 0; i < n; i++) {            
-                        if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] >= lowerKey && current.getKeys()[i] <= upperKey ) {
-                            resultFound = true;
-                            addresses = current.getDataPointers()[i];
-                            for (Address address : addresses) {
-                                block = address.getBlock();
-                                index = address.getIndex();
-                                record = block.getRecords()[index];
-                                scannedBlocks.add(block);
-                                resultSum += record.getFg3_pct_home();
-                                numRecords++;                    
-                            }            
-                            continue;
-                        } else if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] > upperKey) {
-                            System.out.println("current key is " + current.getKeys()[i]);
-                            System.out.println("Upper limit exceeded!");
-                            exceeded = true;
-                            break; // Since keys are sorted, no more matching keys will be found
-                        }
-                    }
-                    current = (LeafNode) current.getNextLeafNode();
-                    if(current == null) break;
-                }
-
-                System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
-                System.out.printf("No. of records found: %d\n", (int) numRecords);
-        
-                //key not found
-                if (!resultFound) {
-                    return -1;
-                }
-        
-                result = resultSum / numRecords;
-        
-                return result;
 
     }
 

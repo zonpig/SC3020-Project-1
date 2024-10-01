@@ -46,7 +46,6 @@ public abstract class Node {
 
 
     public abstract void insertRecord(Address address);
-    public abstract float searchQuery(float key); // search for records with "FG_PCT_home" equal to certain value and return the average "FG3_PCT_home" of those records
     public abstract float rangeQuery(float lowerKey, float upperKey); // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively, and return the average "FG3_PCT_home" of those records
     public abstract float getSubtreeLB(); // find the lower bound value of this node's subtree
     public abstract void enumerateNodes(); // print out the nodes in this node and its subtree

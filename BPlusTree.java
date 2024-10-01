@@ -134,22 +134,24 @@ public class BPlusTree {
                     insertPos++;
                 } 
             }
+            ArrayList<InternalNode> oldlistOfChildNodes = listOfL1ChildNodes;
 
             int numberOfChildNodes = (int) Math.ceil((double) numberOfL1ChildNodes / Node.n);
-            while (numberOfChildNodes > Node.n){
-                ArrayList<InternalNode> listOfChildNodes = new ArrayList<InternalNode>();
+            // int exit = 0;
+            while (numberOfChildNodes > Node.n ){ //|| exit <2){
+                ArrayList<InternalNode> newlistOfChildNodes = new ArrayList<InternalNode>();
                 for (int child=0; child < numberOfChildNodes; child++) {
-                    listOfChildNodes.add(new InternalNode());
+                    newlistOfChildNodes.add(new InternalNode());
                 }
 
                 // insert child nodes
                 int childNum = 0;
                 insertPos = 0;
-                for (InternalNode node: listOfChildNodes){
+                for (InternalNode node: oldlistOfChildNodes){
                     //get first key of child
                     firstKey = node.getSubtreeLB();
                     if (insertPos < Node.n) {
-                        curNode = listOfChildNodes.get(childNum);
+                        curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
                         curNode.bulkInsert2(firstKey, insertPos,node);
@@ -158,13 +160,17 @@ public class BPlusTree {
                     else {
                         childNum++;
                         insertPos = 0;
-                        curNode = listOfChildNodes.get(childNum);
+                        curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         curNode.bulkInsert2(firstKey, insertPos,node);
                         insertPos++;
                     }
                 }
+                oldlistOfChildNodes = newlistOfChildNodes;
+                // if (exit != 1){
                 numberOfChildNodes = (int) Math.ceil((double) numberOfChildNodes / Node.n);
+                // }
+                // if (numberOfChildNodes <= Node.n){exit++;}
             }
         }
 
@@ -173,7 +179,6 @@ public class BPlusTree {
         }
 }
 
-
     // insert record into B+ tree
     public void insertRecord(Address address) {
         // IMPLEMENTATION
@@ -181,17 +186,11 @@ public class BPlusTree {
         if(rootNode.getParent() != null) rootNode = rootNode.getParent();
     }
 
-
-    // search for records with "FG_PCT_home" equal to certain value and return the average "FG3_PCT_home" of those records
-    // need to report number of index nodes AND number of data blocks the process access, maybe can use some sort of print statement within this method
-    // need to report running time of this search query
-    public float searchQuery(float key) {
-        return rootNode.searchQuery(key);
-    }
-
-    // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively, and return the average "FG3_PCT_home" of those records
-    // need to report number of index nodes AND number of data blocks the process access, maybe can use some sort of print statement within this method
-    // need to report running time of this range query
+    // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively
+    // number of index nodes process access
+    // number of data blocks the process access
+    // average of "FG3_PCT_home" of the records returned
+    // running time of this range query
     public float rangeQuery(float lowerKey, float upperKey) {
         // IMPLEMENTATION
         return rootNode.rangeQuery(lowerKey, upperKey);
