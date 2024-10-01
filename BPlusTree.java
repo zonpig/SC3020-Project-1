@@ -101,8 +101,6 @@ public class BPlusTree {
             }
         }
 
-        rootNode = curLeaf;
-
         // Create 1st Level Child Nodes
         if (numberOfLeafNodes > 1) {
             int numberOfL1ChildNodes = (int) Math.ceil((double) numberOfLeafNodes / Node.n);
@@ -172,10 +170,10 @@ public class BPlusTree {
                 // }
                 // if (numberOfChildNodes <= Node.n){exit++;}
             }
-        }
-
-        if (curNode!=null){
             rootNode = curNode;
+        }
+        else{
+            rootNode = curLeaf;
         }
 }
 
