@@ -142,7 +142,7 @@ public class BPlusTree {
                     // put inside the internal node
                     curNode.bulkInsertFirst(insertPos, leaf);
                     insertPos++;
-                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                     // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
                     L1ChildNum++;
                     insertPos = 0;
@@ -188,7 +188,7 @@ public class BPlusTree {
                         curNode.bulkInsertFirst(insertPos, node);
                         insertPos++;
                     }
-                    else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                    else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                         // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
                         childNum++;
                         insertPos = 0;
