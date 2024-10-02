@@ -76,6 +76,7 @@ public class BPlusTree {
 
         // Create Leaf Nodes
         int numberOfLeafNodes = (int) Math.ceil((double) uniqueKeyCount / Node.n);
+        int numberOfKeysLastNode = uniqueKeyCount % Node.n;
         ArrayList<LeafNode> listOfLeafs = new ArrayList<LeafNode>();
         for (int leaf = 0; leaf < numberOfLeafNodes; leaf++) {
             listOfLeafs.add(new LeafNode());
@@ -97,6 +98,14 @@ public class BPlusTree {
             curLeaf = listOfLeafs.get(leafnum);
             if (prevKey == curKey) {
                 curLeaf.bulkInsertDupli(address, insertPos - 1);
+            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
+                leafnum += 1;
+                curLeaf = listOfLeafs.get(leafnum);
+                insertPos = 0;
+                curLeaf.bulkInsert2(address, curKey, insertPos);
+                insertPos++;
+                prevKey = curKey;
             } else if (insertPos < Node.n) {
                 curLeaf.bulkInsert2(address, curKey, insertPos);
                 insertPos++;
