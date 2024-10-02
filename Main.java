@@ -3,7 +3,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
     private static Disk disk;
@@ -28,7 +33,7 @@ public class Main {
         String filePath = "games.txt";
 
         // Create List of Addresses
-        ArrayList<Address> listOfAddresses = new ArrayList<Address>();
+        ArrayList<Map.Entry<Float, Address>> listOfAddressPairs = new ArrayList<>();
 
         try {
             disk = new Disk("database.bin");
@@ -64,7 +69,7 @@ public class Main {
                     if (choice == 1) {
                         bplustree.insertRecord(address);
                     } else if (choice == 2) {
-                        listOfAddresses.add(address);
+                        listOfAddressPairs.add(new AbstractMap.SimpleEntry<>(fg_pct_home, address));
                     }
                     numRecords++;
                 }
@@ -73,7 +78,14 @@ public class Main {
             scanner.close();
             System.out.println("Number of records: " + numRecords);
             if (choice == 2) {
-                bplustree.bulkLoad(listOfAddresses, numRecords);
+                // Sort the list by fg_pct_home
+                listOfAddressPairs.sort(Comparator.comparing(Map.Entry::getKey));
+
+                // If needed, convert the sorted pairs back to a list of addresses
+                ArrayList<Address> sortedAddresses = (ArrayList<Address>) listOfAddressPairs.stream()
+                        .map(Map.Entry::getValue)
+                        .collect(Collectors.toList());
+                bplustree.bulkLoad(sortedAddresses, numRecords);
             }
 
             lines();
