@@ -1,4 +1,7 @@
-public class Record { // 25 bytes for attributes + 7 bytes padding because java memory alignment in 8 bytes
+import java.nio.ByteBuffer;
+
+public class Record { // 25 bytes for attributes + 7 bytes padding because java memory alignment in 8
+                      // bytes
     private int game_date_est; // 4 bytes
     private int team_id_home; // 4 bytes
     private short pts_home; // 2 bytes
@@ -8,8 +11,10 @@ public class Record { // 25 bytes for attributes + 7 bytes padding because java 
     private byte ast_home; // 1 byte
     private byte reb_home; // 1 byte
     private byte home_team_wins; // 1 byte
+    private byte[] padding; // 7 bytes padding for alignment, ensuring record is 32 bytes
 
-    public Record(int game_date_est, int team_id_home, short pts_home, float fg_pct_home, float ft_pct_home, float fg3_pct_home, byte ast_home, byte reb_home, byte home_team_wins) {
+    public Record(int game_date_est, int team_id_home, short pts_home, float fg_pct_home, float ft_pct_home,
+            float fg3_pct_home, byte ast_home, byte reb_home, byte home_team_wins) {
         this.game_date_est = game_date_est;
         this.team_id_home = team_id_home;
         this.pts_home = pts_home;
@@ -19,6 +24,41 @@ public class Record { // 25 bytes for attributes + 7 bytes padding because java 
         this.ast_home = ast_home;
         this.reb_home = reb_home;
         this.home_team_wins = home_team_wins;
+        this.padding = new byte[7]; // 7 bytes of padding
+
+    }
+
+    // Method to serialize the Record into a byte array
+    public byte[] toByteArray() {
+        ByteBuffer buffer = ByteBuffer.allocate(Block.RECORD_SIZE); // 32 bytes
+        buffer.putInt(game_date_est);
+        buffer.putInt(team_id_home);
+        buffer.putShort(pts_home);
+        buffer.putFloat(fg_pct_home);
+        buffer.putFloat(ft_pct_home);
+        buffer.putFloat(fg3_pct_home);
+        buffer.put(ast_home);
+        buffer.put(reb_home);
+        buffer.put(home_team_wins);
+        buffer.put(padding); // Add 7 bytes of padding
+
+        return buffer.array();
+    }
+
+    // Constructor to deserialize a Record from a byte array
+    public Record(byte[] recordData) {
+        ByteBuffer buffer = ByteBuffer.wrap(recordData);
+        this.game_date_est = buffer.getInt();
+        this.team_id_home = buffer.getInt();
+        this.pts_home = buffer.getShort();
+        this.fg_pct_home = buffer.getFloat();
+        this.ft_pct_home = buffer.getFloat();
+        this.fg3_pct_home = buffer.getFloat();
+        this.ast_home = buffer.get();
+        this.reb_home = buffer.get();
+        this.home_team_wins = buffer.get();
+        this.padding = new byte[7]; // Skip 7 bytes of padding
+        buffer.get(this.padding);
     }
 
     // Getter for game_date_est
@@ -66,7 +106,7 @@ public class Record { // 25 bytes for attributes + 7 bytes padding because java 
         return home_team_wins;
     }
 
-    public String getUniqueId(){
+    public String getUniqueId() {
         return Integer.valueOf(game_date_est).toString() + Integer.valueOf(team_id_home).toString();
     }
 }
