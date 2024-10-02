@@ -1,7 +1,5 @@
 // child class of node, has max of n+1 pointers to child nodes
 // has minimum of floor(n/2) keys
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class InternalNode extends Node {
@@ -37,7 +35,10 @@ public class InternalNode extends Node {
     }
 
     public void bulkInsert2(float key, int insertPos, Node childNode){
-        this.keys[insertPos] = key;
+        this.keys[insertPos-1] = key;
+        this.childPointers[insertPos] = childNode;
+    }
+    public void bulkInsertFirst(int insertPos, Node childNode){
         this.childPointers[insertPos] = childNode;
     }
 

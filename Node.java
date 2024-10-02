@@ -4,7 +4,7 @@ import java.util.Arrays;
 // this class contains an array of float, which represents the keys in the node
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
 public abstract class Node {
-    public static final int n = 340;
+    public static final int n = 31;
     protected InternalNode parent;
     protected float[] keys; // 4 bytes * value of n
 
