@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -79,8 +78,8 @@ public class Main {
     public static void task1() {
         System.out.println("~~~~~TASK 1~~~~~");
         System.out.println("Storing data on disk...");
-        System.out.println("Number of records: " + numRecords);
         System.out.println("Size of a record: " + Block.RECORD_SIZE);
+        System.out.println("Number of records: " + numRecords);
         System.out.println("Number of records stored in a block: " + Block.MAX_NUM_RECORDS);
         System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
     }
