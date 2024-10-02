@@ -5,9 +5,6 @@ import java.util.Arrays;
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
 public abstract class Node {
     public static final int n = 31;
-    // public static final int MIN_N = 16;
-
-    // protected int numKeys;
     protected InternalNode parent;
     protected float[] keys; // 4 bytes * value of n
 
@@ -49,8 +46,6 @@ public abstract class Node {
 
 
     public abstract void insertRecord(Address address);
-    public abstract boolean deleteRecord(float key, Disk disk, Node leftSibling, Node rightSibiling); // delete records with "FG_PCT_home" below 0.35 inclusively
-    public abstract float searchQuery(float key); // search for records with "FG_PCT_home" equal to certain value and return the average "FG3_PCT_home" of those records
     public abstract float rangeQuery(float lowerKey, float upperKey); // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively, and return the average "FG3_PCT_home" of those records
     public abstract float getSubtreeLB(); // find the lower bound value of this node's subtree
     public abstract void enumerateNodes(); // print out the nodes in this node and its subtree
