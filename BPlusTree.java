@@ -122,6 +122,7 @@ public class BPlusTree {
         // Create 1st Level Child Nodes
         if (numberOfLeafNodes > 1) {
             int numberOfL1ChildNodes = (int) Math.ceil((double) numberOfLeafNodes / Node.n);
+            numberOfKeysLastNode = numberOfLeafNodes % Node.n;
             ArrayList<InternalNode> listOfL1ChildNodes = new ArrayList<InternalNode>();
             for (int childL1 = 0; childL1 < numberOfL1ChildNodes; childL1++) {
                 listOfL1ChildNodes.add(new InternalNode());
@@ -139,6 +140,14 @@ public class BPlusTree {
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
                     leaf.setParent(curNode);
                     // put inside the internal node
+                    curNode.bulkInsertFirst(insertPos, leaf);
+                    insertPos++;
+                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                    // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
+                    L1ChildNum++;
+                    insertPos = 0;
+                    curNode = listOfL1ChildNodes.get(L1ChildNum);
+                    leaf.setParent(curNode);
                     curNode.bulkInsertFirst(insertPos, leaf);
                     insertPos++;
                 } else if (insertPos <= Node.n) {
@@ -159,6 +168,7 @@ public class BPlusTree {
 
             ArrayList<InternalNode> oldlistOfChildNodes = listOfL1ChildNodes;
             int numberOfChildNodes = (int) Math.ceil((double) numberOfL1ChildNodes / Node.n);
+            numberOfKeysLastNode = numberOfL1ChildNodes % Node.n;
             while (numberOfChildNodes > 1) {
                 ArrayList<InternalNode> newlistOfChildNodes = new ArrayList<InternalNode>();
                 for (int child = 0; child < numberOfChildNodes; child++) {
@@ -172,13 +182,21 @@ public class BPlusTree {
                     // get first key of child
                     firstKey = node.getSubtreeLB();
                     if (insertPos == 0) {
-                        curNode = newlistOfChildNodes.get(L1ChildNum);
+                        curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
                         curNode.bulkInsertFirst(insertPos, node);
                         insertPos++;
                     }
-                    if (insertPos <= Node.n) {
+                    else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                        // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
+                        childNum++;
+                        insertPos = 0;
+                        curNode = newlistOfChildNodes.get(childNum);
+                        node.setParent(curNode);
+                        curNode.bulkInsertFirst(insertPos, node);
+                        insertPos++;
+                    } else if (insertPos <= Node.n) {
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
@@ -195,6 +213,7 @@ public class BPlusTree {
                 }
                 oldlistOfChildNodes = newlistOfChildNodes;
                 numberOfChildNodes = (int) Math.ceil((double) numberOfChildNodes / Node.n);
+                numberOfKeysLastNode = numberOfChildNodes % Node.n;
             }
             rootNode = curNode;
         } else {

@@ -64,7 +64,6 @@ public class LeafNode extends Node {
                         this.dataPointers[i] = this.dataPointers[i - 1];
                     }
                 }
-
                 // inserting of new key and updating data pointer
                 this.keys[insertPos] = key;
                 this.dataPointers[insertPos] = new ArrayList<Address>();
