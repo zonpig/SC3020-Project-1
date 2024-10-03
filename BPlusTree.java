@@ -55,10 +55,10 @@ public class BPlusTree {
     public void bulkLoad(ArrayList<Address> addressList, int numRecords) {
         // Sorting the list by fg_pct_home
         System.out.println("Sorting the list by fg_pct_home");
-        addressList.sort((a1, a2) -> Float.compare(
-        a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
-        a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
-        ));
+        // addressList.sort((a1, a2) -> Float.compare(
+        // a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
+        // a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
+        // ));
 
         // Find number of unique keys
         // Create a Set to store unique keys
