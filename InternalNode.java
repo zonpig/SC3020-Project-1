@@ -188,7 +188,6 @@ public class InternalNode extends Node {
     }
 
     public float rangeQuery(float lowerKey, float upperKey) {
-        // IMPLEMENTATION
         int nodeCount = 0;
         float result;
         int i = 0;

@@ -11,13 +11,11 @@ public class BPlusTree {
 
     // count the number of nodes in this B+ tree
     public int countNodes() {
-        // IMPLEMENTATION
         return rootNode.countNodes();
     }
 
     // count the number of levels in this B+ tree
     public int countLevels() {
-        // IMPLEMENTATION
         if (rootNode.getClass().toString().equals("class LeafNode"))
             return 1;
         int numOfLevels = 1;
@@ -57,10 +55,10 @@ public class BPlusTree {
     public void bulkLoad(ArrayList<Address> addressList, int numRecords) {
         // Sorting the list by fg_pct_home
         System.out.println("Sorting the list by fg_pct_home");
-        // addressList.sort((a1, a2) -> Float.compare(
-        // a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
-        // a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
-        // ));
+        addressList.sort((a1, a2) -> Float.compare(
+        a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
+        a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
+        ));
 
         // Find number of unique keys
         // Create a Set to store unique keys
@@ -223,7 +221,6 @@ public class BPlusTree {
 
     // insert record into B+ tree
     public void insertRecord(Address address) {
-        // IMPLEMENTATION
         rootNode.insertRecord(address);
         if (rootNode.getParent() != null)
             rootNode = rootNode.getParent();
@@ -236,7 +233,6 @@ public class BPlusTree {
     // average of "FG3_PCT_home" of the records returned
     // running time of this range query
     public float rangeQuery(float lowerKey, float upperKey) {
-        // IMPLEMENTATION
         return rootNode.rangeQuery(lowerKey, upperKey);
 
     }
