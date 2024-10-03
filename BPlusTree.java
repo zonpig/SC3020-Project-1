@@ -52,9 +52,8 @@ public class BPlusTree {
         rootNode.enumerateNodes();
     }
 
-    public void bulkLoad(ArrayList<Address> addressList, int numRecords) {
+    public void bulkLoad(ArrayList<Address> addressList) {
         // Sorting the list by fg_pct_home
-        System.out.println("Sorting the list by fg_pct_home");
         // addressList.sort((a1, a2) -> Float.compare(
         // a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
         // a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
@@ -96,7 +95,7 @@ public class BPlusTree {
             curLeaf = listOfLeafs.get(leafnum);
             if (prevKey == curKey) {
                 curLeaf.bulkInsertDupli(address, insertPos - 1);
-            } else if (leafnum == numberOfLeafNodes - 3 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                 // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
                 leafnum += 1;
                 curLeaf = listOfLeafs.get(leafnum);
@@ -140,7 +139,7 @@ public class BPlusTree {
                     // put inside the internal node
                     curNode.bulkInsertFirst(insertPos, leaf);
                     insertPos++;
-                } else if (L1ChildNum == numberOfL1ChildNodes - 3 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                     // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
                     L1ChildNum++;
                     insertPos = 0;
@@ -186,7 +185,7 @@ public class BPlusTree {
                         curNode.bulkInsertFirst(insertPos, node);
                         insertPos++;
                     }
-                    else if (childNum == numberOfChildNodes - 3 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                    else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                         // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
                         childNum++;
                         insertPos = 0;

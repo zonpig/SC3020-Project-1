@@ -79,13 +79,14 @@ public class Main {
             System.out.println("Number of records: " + numRecords);
             if (choice == 2) {
                 // Sort the list by fg_pct_home
+                System.out.println("Sorting the list by fg_pct_home");
                 listOfAddressPairs.sort(Comparator.comparing(Map.Entry::getKey));
 
                 // If needed, convert the sorted pairs back to a list of addresses
                 ArrayList<Address> sortedAddresses = (ArrayList<Address>) listOfAddressPairs.stream()
                         .map(Map.Entry::getValue)
                         .collect(Collectors.toList());
-                bplustree.bulkLoad(sortedAddresses, numRecords);
+                bplustree.bulkLoad(sortedAddresses);
             }
 
             lines();
@@ -131,6 +132,7 @@ public class Main {
     }
 
     public static void task3() {
+        bplustree.enumerateNodes();
         System.out.println("Task 3");
         System.out.println("Retrieving records with 'FG_PCT_home' between 0.5 and 0.8 inclusively...");
         float lowerKey = 0.5f;
