@@ -132,7 +132,6 @@ public class Main {
     }
 
     public static void task3() {
-        bplustree.enumerateNodes();
         System.out.println("Task 3");
         System.out.println("Retrieving records with 'FG_PCT_home' between 0.5 and 0.8 inclusively...");
         float lowerKey = 0.5f;

@@ -34,13 +34,15 @@ public class InternalNode extends Node {
         }
     }
 
+    public void bulkInsertFirst(Node childNode){
+        this.childPointers[0] = childNode;
+    }
+
     public void bulkInsert(float key, int insertPos, Node childNode){
-        this.keys[insertPos-1] = key;
-        this.childPointers[insertPos] = childNode;
+        this.keys[insertPos] = key;
+        this.childPointers[insertPos + 1] = childNode;
     }
-    public void bulkInsertFirst(int insertPos, Node childNode){
-        this.childPointers[insertPos] = childNode;
-    }
+    
 
     public void insertChild(Node childNode) {
         if(this.isFull()) {

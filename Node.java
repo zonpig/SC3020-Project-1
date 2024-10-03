@@ -1,6 +1,4 @@
 import java.util.Arrays;
-
-// parent class for all nodes, value of n is derived from N * CostOFKey + (N+1) * CostOfPointer <= Block Size
 // this class contains an array of float, which represents the keys in the node
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
 public abstract class Node {
