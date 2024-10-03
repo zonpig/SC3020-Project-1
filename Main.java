@@ -15,10 +15,10 @@ public class Main {
     private static BPlusTree bplustree = new BPlusTree();
 
     public static void main(String[] arg) {
+
+        // Option to
         int choice;
         Scanner inputScanner = new Scanner(System.in);
-
-        // User input for method selection
         do {
             System.out.println("Choose Method for Building B+ Tree:");
             System.out.println("1. Iterative Insertion");
@@ -28,39 +28,42 @@ public class Main {
 
         // Define the file path
         String filePath = "games.txt";
+
+        // Create List of Addresses
         ArrayList<Map.Entry<Float, Address>> listOfAddressPairs = new ArrayList<>();
 
         // Use try-with-resources for Disk and Scanner
         try (Disk disk = new Disk("database.bin");
              Scanner scanner = new Scanner(new File(filePath))) {
-            
+
             scanner.nextLine(); // Skip header line
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
+
+                // Split the line into individual values using tab as the delimiter
                 String[] values = line.split("\t");
 
                 if (values.length == 9 && allValuesPresent(values)) {
-                    try {
-                        // Parse and create a new record
-                        int date = Integer.parseInt(values[0].replace("/", ""));
+                    try{
+                        // Extract and store individual values in variables
+                        String dateStr = values[0].replace("/", ""); // Remove slashes
+                        int date = Integer.parseInt(dateStr);
                         int team_id_home = Integer.parseInt(values[1]);
-                        short pts_home = Short.parseShort(values[2]);
+                        short pts_home = (short) Integer.parseInt(values[2]);
                         float fg_pct_home = Float.parseFloat(values[3]);
                         float ft_pct_home = Float.parseFloat(values[4]);
                         float fg3_pct_home = Float.parseFloat(values[5]);
-                        byte ast_home = Byte.parseByte(values[6]);
-                        byte reb_home = Byte.parseByte(values[7]);
-                        byte home_team_wins = Byte.parseByte(values[8]);
+                        byte ast_home = (byte) Integer.parseInt(values[6]);
+                        byte reb_home = (byte) Integer.parseInt(values[7]);
+                        byte home_team_wins = (byte) Integer.parseInt(values[8]);
 
                         Record newRecord = new Record(date, team_id_home, pts_home, fg_pct_home, ft_pct_home, fg3_pct_home,
                                 ast_home, reb_home, home_team_wins);
                         Address address = disk.insertRecord(newRecord);
-
-                        // Insert or bulk load based on user choice
                         if (choice == 1) {
                             bplustree.insertRecord(address);
-                        } else {
+                        } else if (choice == 2) {
                             listOfAddressPairs.add(new AbstractMap.SimpleEntry<>(fg_pct_home, address));
                         }
                         numRecords++;
@@ -69,28 +72,31 @@ public class Main {
                     }
                 }
             }
-
-            // Process after file reading
+            System.out.println("Number of records: " + numRecords);
             if (choice == 2) {
-                // Sort and bulk load
+                // Sort the list by fg_pct_home
                 listOfAddressPairs.sort(Comparator.comparing(Map.Entry::getKey));
+
+                // If needed, convert the sorted pairs back to a list of addresses
                 ArrayList<Address> sortedAddresses = (ArrayList<Address>) listOfAddressPairs.stream()
                         .map(Map.Entry::getValue)
                         .collect(Collectors.toList());
                 bplustree.bulkLoad(sortedAddresses, numRecords);
             }
 
-            // Execute tasks
             lines();
             task1(disk);
             lines();
-            task2();
+            task2(disk);
             lines();
             task3(disk);
             lines();
 
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
+
+            System.out.println(e.getMessage());
+            System.out.println("record number: " + numRecords);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         } finally {
@@ -120,7 +126,7 @@ public class Main {
         System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
     }
 
-    public static void task2() {
+    public static void task2(Disk disk) {
         System.out.println("TASK 2");
         System.out.println("Building B+ tree on attribute 'FG_PCT_home'...");
         System.out.println("The parameter n of the B+ tree is: " + Node.n);
@@ -153,7 +159,7 @@ public class Main {
         for (Block block : blocks) {
             for (Record record : block.getRecords()) {
                 if (record != null && record.getFg_pct_home() >= lowerKey && record.getFg_pct_home() <= upperKey) {
-                    numRecords++; // Increment to count valid records
+                    numRecords++; // numRecords++ to simulate reading the record
                     resultSum += record.getFg3_pct_home();
                 }
             }
@@ -163,11 +169,9 @@ public class Main {
 
         System.out.println("Num records found: " + numRecords);
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
-        if (numRecords > 0) {
-            System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", resultSum / numRecords);
-        } else {
-            System.out.println("No records found in the specified range.");
-        }
+        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %.4f\n", resultSum / numRecords);
         System.out.println("Running time of brute force scan in nanoseconds: " + (end - start));
+
     }
+
 }
