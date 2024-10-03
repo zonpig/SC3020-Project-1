@@ -34,7 +34,7 @@ public class InternalNode extends Node {
         }
     }
 
-    public void bulkInsert2(float key, int insertPos, Node childNode){
+    public void bulkInsert(float key, int insertPos, Node childNode){
         this.keys[insertPos-1] = key;
         this.childPointers[insertPos] = childNode;
     }

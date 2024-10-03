@@ -32,7 +32,7 @@ public class LeafNode extends Node {
         return dataPointers;
     }
 
-    public void bulkInsert2(Address address, float key, int insertPos){
+    public void bulkInsert(Address address, float key, int insertPos){
         this.keys[insertPos] = key;
         this.dataPointers[insertPos] = new ArrayList<Address>();                
         this.dataPointers[insertPos].add(address);

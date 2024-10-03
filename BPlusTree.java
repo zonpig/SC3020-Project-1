@@ -95,23 +95,23 @@ public class BPlusTree {
             curLeaf = listOfLeafs.get(leafnum);
             if (prevKey == curKey) {
                 curLeaf.bulkInsertDupli(address, insertPos - 1);
-            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
-                // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
+            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 
+                       && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
                 leafnum += 1;
                 curLeaf = listOfLeafs.get(leafnum);
                 insertPos = 0;
-                curLeaf.bulkInsert2(address, curKey, insertPos);
+                curLeaf.bulkInsert(address, curKey, insertPos);
                 insertPos++;
                 prevKey = curKey;
             } else if (insertPos < Node.n) {
-                curLeaf.bulkInsert2(address, curKey, insertPos);
+                curLeaf.bulkInsert(address, curKey, insertPos);
                 insertPos++;
                 prevKey = curKey;
             } else {
                 leafnum += 1;
                 curLeaf = listOfLeafs.get(leafnum);
                 insertPos = 0;
-                curLeaf.bulkInsert2(address, curKey, insertPos);
+                curLeaf.bulkInsert(address, curKey, insertPos);
                 insertPos++;
                 prevKey = curKey;
             }
@@ -151,14 +151,14 @@ public class BPlusTree {
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
                     leaf.setParent(curNode);
                     // put inside the internal node
-                    curNode.bulkInsert2(firstKey, insertPos, leaf);
+                    curNode.bulkInsert(firstKey, insertPos, leaf);
                     insertPos++;
                 } else {
                     L1ChildNum++;
                     insertPos = 0;
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
                     leaf.setParent(curNode);
-                    curNode.bulkInsert2(firstKey, insertPos, leaf);
+                    curNode.bulkInsert(firstKey, insertPos, leaf);
                     insertPos++;
                 }
             }
@@ -197,14 +197,14 @@ public class BPlusTree {
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
-                        curNode.bulkInsert2(firstKey, insertPos, node);
+                        curNode.bulkInsert(firstKey, insertPos, node);
                         insertPos++;
                     } else {
                         childNum++;
                         insertPos = 0;
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
-                        curNode.bulkInsert2(firstKey, insertPos, node);
+                        curNode.bulkInsert(firstKey, insertPos, node);
                         insertPos++;
                     }
                 }
