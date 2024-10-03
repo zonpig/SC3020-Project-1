@@ -134,6 +134,9 @@ public class BPlusTree {
                 // get first key of leaf
                 firstKey = leaf.getSubtreeLB();
                 if (insertPos == -1||insertPos >= Node.n) {
+                    if (insertPos >= Node.n){
+                        L1ChildNum++;
+                    }
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
                     leaf.setParent(curNode);
                     // put inside the internal node
@@ -171,6 +174,9 @@ public class BPlusTree {
                     // get first key of child
                     firstKey = node.getSubtreeLB();
                     if (insertPos == -1||insertPos >= Node.n) {
+                        if (insertPos >= Node.n){
+                            childNum++;
+                        }
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
