@@ -15,11 +15,9 @@ public class Disk {
     private Set<Block> availBlocks; // HashSet to track if there are any Blocks available for insertion, otherwise
                                     // will have to create new Block
     private Set<Block> blockSet; // HashSet to track the Blocks which have records on them
-    private ArrayList<ArrayList<Integer>> test = new ArrayList<>(); // keep track of the available slots in block
-                                                                    // to store a record
 
     public Disk(String diskFileName) throws IOException {
-        this.DISK_SIZE = 500 * 1024 * 1024; // 500MB = 500 * 2^20
+        this.DISK_SIZE = 4 * 1024 * 1024; // 4MB = 4 * 2^20
         this.MAX_BLOCKS = this.DISK_SIZE / Block.BLOCK_SIZE;
         this.diskFileName = diskFileName;
         this.blockSet = new HashSet<>();
@@ -32,7 +30,7 @@ public class Disk {
 
         // Initialize disk file with empty blocks
         RandomAccessFile diskFile = new RandomAccessFile(diskFileName, "rw");
-        diskFile.setLength(500 * 1000 * 1000); // Set the size of the file to represent the disk
+        diskFile.setLength(4 * 1000 * 1000); // Set the size of the file to represent the disk
         diskFile.close();
     }
 
@@ -60,8 +58,6 @@ public class Disk {
             blockSet.add(newBlock);
             availBlocks.add(newBlock);
             availIndex.remove(0);
-
-            test.add(new ArrayList<>(List.of(block_index))); // Correct way to add new ArrayList
 
             return address;
         } else {

@@ -53,12 +53,6 @@ public class BPlusTree {
     }
 
     public void bulkLoad(ArrayList<Address> addressList) {
-        // Sorting the list by fg_pct_home
-        // addressList.sort((a1, a2) -> Float.compare(
-        // a1.getBlock().getRecords()[a1.getIndex()].getFg_pct_home(),
-        // a2.getBlock().getRecords()[a2.getIndex()].getFg_pct_home()
-        // ));
-
         // Find number of unique keys
         // Create a Set to store unique keys
         Set<Float> uniqueKeys = new HashSet<>();
@@ -95,8 +89,8 @@ public class BPlusTree {
             curLeaf = listOfLeafs.get(leafnum);
             if (prevKey == curKey) {
                 curLeaf.bulkInsertDupli(address, insertPos - 1);
-            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n+1)/2 
-                       && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+            } else if (leafnum == numberOfLeafNodes - 2 && numberOfKeysLastNode < (Node.n + 1) / 2
+                    && insertPos > Math.ceil((Node.n + numberOfKeysLastNode) / 2)) {
                 leafnum += 1;
                 curLeaf = listOfLeafs.get(leafnum);
                 insertPos = 0;
@@ -118,7 +112,7 @@ public class BPlusTree {
         }
         // Create 1st Level Child Nodes
         if (numberOfLeafNodes > 1) {
-            int numberOfL1ChildNodes = (int) Math.ceil((double) numberOfLeafNodes / (Node.n + 1 ));
+            int numberOfL1ChildNodes = (int) Math.ceil((double) numberOfLeafNodes / (Node.n + 1));
             numberOfKeysLastNode = numberOfLeafNodes % Node.n;
             ArrayList<InternalNode> listOfL1ChildNodes = new ArrayList<InternalNode>();
             for (int childL1 = 0; childL1 < numberOfL1ChildNodes; childL1++) {
@@ -133,8 +127,8 @@ public class BPlusTree {
             for (LeafNode leaf : listOfLeafs) {
                 // get first key of leaf
                 firstKey = leaf.getSubtreeLB();
-                if (insertPos == -1||insertPos >= Node.n) {
-                    if (insertPos >= Node.n){
+                if (insertPos == -1 || insertPos >= Node.n) {
+                    if (insertPos >= Node.n) {
                         L1ChildNum++;
                     }
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
@@ -142,8 +136,8 @@ public class BPlusTree {
                     // put inside the internal node
                     curNode.bulkInsertFirst(leaf);
                     insertPos = 0;
-                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 
-                          && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
+                } else if (L1ChildNum == numberOfL1ChildNodes - 2 && numberOfKeysLastNode < (Node.n) / 2
+                        && insertPos > Math.ceil((Node.n + numberOfKeysLastNode) / 2)) {
                     L1ChildNum++;
                     curNode = listOfL1ChildNodes.get(L1ChildNum);
                     leaf.setParent(curNode);
@@ -173,8 +167,8 @@ public class BPlusTree {
                 for (InternalNode node : oldlistOfChildNodes) {
                     // get first key of child
                     firstKey = node.getSubtreeLB();
-                    if (insertPos == -1||insertPos >= Node.n) {
-                        if (insertPos >= Node.n){
+                    if (insertPos == -1 || insertPos >= Node.n) {
+                        if (insertPos >= Node.n) {
                             childNum++;
                         }
                         curNode = newlistOfChildNodes.get(childNum);
@@ -182,16 +176,16 @@ public class BPlusTree {
                         // put inside the internal node
                         curNode.bulkInsertFirst(node);
                         insertPos = 0;
-                    }
-                    else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n)/2 
-                            && insertPos > Math.ceil((Node.n+numberOfKeysLastNode)/2)){
-                        // 2nd last node & last node has fewer than minimum keys & insertPos > half of last 2 nodes
+                    } else if (childNum == numberOfChildNodes - 2 && numberOfKeysLastNode < (Node.n) / 2
+                            && insertPos > Math.ceil((Node.n + numberOfKeysLastNode) / 2)) {
+                        // 2nd last node & last node has fewer than minimum keys & insertPos > half of
+                        // last 2 nodes
                         childNum++;
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         curNode.bulkInsertFirst(node);
                         insertPos = 0;
-                    } else{
+                    } else {
                         curNode = newlistOfChildNodes.get(childNum);
                         node.setParent(curNode);
                         // put inside the internal node
