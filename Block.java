@@ -89,8 +89,4 @@ public class Block {
         }
         return records;
     }
-
-    // public Record[] getRecords() {
-    // return records;
-    // }
 }

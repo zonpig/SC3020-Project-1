@@ -1,9 +1,7 @@
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Disk {
@@ -30,7 +28,8 @@ public class Disk {
 
         // Initialize disk file with empty blocks
         RandomAccessFile diskFile = new RandomAccessFile(diskFileName, "rw");
-        diskFile.setLength(4 * 1000 * 1000); // Set the size of the file to represent the disk
+        // diskFile.setLength(4 * 1000 * 1000); // Set the size of the file to represent
+        // the disk
         diskFile.close();
     }
 
