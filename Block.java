@@ -35,12 +35,6 @@ public class Block {
         return new Address(this, block_index, offset);
     }
 
-    public void deleteRecord(int index) {
-        availIndex.add(index);
-
-        // Find a way to delete from block???
-    }
-
     public boolean isFull() {
         if (availIndex.size() == 0)
             return true;

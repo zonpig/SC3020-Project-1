@@ -70,17 +70,6 @@ public class Disk {
         }
     }
 
-    public void deleteRecord(Address address) { // delete record from the Block it is in
-        Block block = address.getBlock();
-        block.deleteRecord(address.getIndex());
-        if (block.isEmpty()) { // if block is empty, we no longer need it
-            availBlocks.remove(block);
-            blockSet.remove(block);
-        } else { // if block still has space then we add it to the set of availBlocks
-            availBlocks.add(block);
-        }
-    }
-
     public int getNumBlocks() { // get number of Blocks stored on Disk
         return blockSet.size();
     }
