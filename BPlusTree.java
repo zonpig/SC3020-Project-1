@@ -1,12 +1,36 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-public class BPlusTree {
+public class BPlusTree implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Node rootNode;
 
-    public BPlusTree() {
+    public BPlusTree(String bPlusFileName) throws IOException {
         rootNode = new LeafNode();
+    }
+
+    public void serializeTree(String fileName) throws IOException {
+        try (FileOutputStream fileOut = new FileOutputStream(fileName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(this);
+        }
+    }
+
+    public static BPlusTree deserializeTree(String fileName) throws IOException, ClassNotFoundException {
+        BPlusTree tree;
+        try (FileInputStream fileIn = new FileInputStream(fileName);
+                ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            tree = (BPlusTree) in.readObject();
+        }
+        return tree;
     }
 
     // count the number of nodes in this B+ tree

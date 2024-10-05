@@ -13,7 +13,7 @@ import java.util.Map;
 public class Main {
     private static Disk disk;
     private static int numRecords = 0;
-    private static BPlusTree bplustree = new BPlusTree();
+    private static BPlusTree bplustree;
 
     public static void main(String[] arg) {
 
@@ -36,6 +36,7 @@ public class Main {
         ArrayList<Map.Entry<Float, Address>> listOfAddressPairs = new ArrayList<>();
 
         try {
+            bplustree = new BPlusTree("bplustree.bin");
             disk = new Disk("database.bin");
             Scanner scanner = new Scanner(new File(filePath));
             scanner.nextLine();
@@ -89,6 +90,10 @@ public class Main {
                 bplustree.bulkLoad(sortedAddresses);
             }
 
+            bplustree.serializeTree("bplustree.bin");
+
+            bplustree = BPlusTree.deserializeTree("bplustree.bin");
+
             lines();
             task1();
             lines();
@@ -104,6 +109,8 @@ public class Main {
             System.out.println("record number: " + numRecords);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
     }

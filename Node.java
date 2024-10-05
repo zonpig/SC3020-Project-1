@@ -1,7 +1,11 @@
+import java.io.Serializable;
 import java.util.Arrays;
+
 // this class contains an array of float, which represents the keys in the node
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
-public abstract class Node {
+public abstract class Node implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final int n = 340;
     protected InternalNode parent;
     protected float[] keys; // 4 bytes * value of n
