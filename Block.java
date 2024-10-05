@@ -1,8 +1,11 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Block {
+public class Block implements Serializable {
+    private static final long serialVersionUID = 1L; // To ensure consistency during serialization.
+
     public static final int BLOCK_SIZE = 4096; // 4096 bytes block size
     public static final int RECORD_SIZE = 32; // 32 bytes record size
     public static final int MAX_NUM_RECORDS = BLOCK_SIZE / RECORD_SIZE;
