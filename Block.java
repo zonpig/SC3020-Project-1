@@ -44,12 +44,6 @@ public class Block implements Serializable {
         return false;
     }
 
-    public boolean isEmpty() {
-        if (availIndex.size() == MAX_NUM_RECORDS)
-            return true;
-        return false;
-    }
-
     public Record[] getRecords() {
         Record[] records = new Record[MAX_NUM_RECORDS - availIndex.size()];
         int recordCount = 0; // Counter for how many records are actually added to the array

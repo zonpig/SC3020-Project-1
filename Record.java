@@ -25,7 +25,6 @@ public class Record { // 25 bytes for attributes + 7 bytes padding because java 
         this.reb_home = reb_home;
         this.home_team_wins = home_team_wins;
         this.padding = new byte[7]; // 7 bytes of padding
-
     }
 
     // Method to serialize the Record into a byte array
