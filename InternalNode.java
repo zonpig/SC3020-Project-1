@@ -29,7 +29,7 @@ public class InternalNode extends Node {
         while (insertPos < Node.n && this.keys[insertPos] <= key) {
             if (this.keys[insertPos] == key) {
                 // If a duplicate key is found, insert into the appropriate child
-                // Assuming duplicates go into the next child
+                // Duplicates go into the next child
                 if (insertPos + 1 < this.childPointers.length) {
                     this.childPointers[insertPos + 1].insertRecord(address);
                 } else {
