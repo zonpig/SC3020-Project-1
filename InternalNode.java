@@ -20,22 +20,34 @@ public class InternalNode extends Node {
     }
 
     public void insertRecord(Address address) {
-        int insertPos = 0;
         Block block = address.getBlock();
         int index = address.getIndex();
         float key = block.getRecords()[index].getFg_pct_home();
+    
+        // Find the position to insert the new key
+        int insertPos = 0;
         while (insertPos < Node.n && this.keys[insertPos] <= key) {
-            if (this.keys[insertPos] == key)
-                break;
+            if (this.keys[insertPos] == key) {
+                // If a duplicate key is found, insert into the appropriate child
+                // Assuming duplicates go into the next child
+                if (insertPos + 1 < this.childPointers.length) {
+                    this.childPointers[insertPos + 1].insertRecord(address);
+                } else {
+                    // Handle case where there is no child pointer
+                    System.err.println("No child pointer available for duplicates.");
+                }
+                return; // Exit after handling duplicate
+            }
             insertPos++;
         }
-
-        if (insertPos < Node.n && this.keys[insertPos] == key) {
-            this.childPointers[insertPos + 1].insertRecord(address);
-        } else {
+    
+        // Ensure we are not accessing out of bounds
+        if (insertPos < this.childPointers.length) {
             this.childPointers[insertPos].insertRecord(address);
+        } else {
+            System.err.println("No valid child pointer to insert into.");
         }
-    }
+    } 
 
     public void bulkInsertFirst(Node childNode) {
         this.childPointers[0] = childNode;

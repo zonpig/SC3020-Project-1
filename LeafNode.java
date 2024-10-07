@@ -48,98 +48,65 @@ public class LeafNode extends Node {
         Block block = address.getBlock();
         int index = address.getIndex();
         float key = block.getRecords()[index].getFg_pct_home();
+    
         if (!isFull() || containsKey(key)) {
             int insertPos = 0;
+    
+            // Find the position to insert the new key
             while (insertPos < Node.n && this.keys[insertPos] <= key) {
-                if (this.keys[insertPos] == key)
-                    break;
+                if (this.keys[insertPos] == key) {
+                    // Handle duplicate key
+                    this.dataPointers[insertPos].add(address);
+                    return; // Exit early if we inserted into the linked list
+                }
                 insertPos++;
             }
-
-            // if there is duplicate key, insert into linked list
-            if (this.keys[insertPos] == key) {
-                this.dataPointers[insertPos].add(address);
-            } else {
-                // Shift keys and pointers right if there is a need to.
-                if (this.keys[insertPos] != Float.MAX_VALUE) {
-                    for (int i = Node.n - 1; i > insertPos; i--) {
-                        this.keys[i] = this.keys[i - 1];
-                        this.dataPointers[i] = this.dataPointers[i - 1];
-                    }
+    
+            // Shift keys and pointers right if necessary
+            if (insertPos < Node.n && this.keys[insertPos] != Float.MAX_VALUE) {
+                for (int i = Node.n - 1; i > insertPos; i--) {
+                    this.keys[i] = this.keys[i - 1];
+                    this.dataPointers[i] = this.dataPointers[i - 1];
                 }
-                // inserting of new key and updating data pointer
-                this.keys[insertPos] = key;
-                this.dataPointers[insertPos] = new ArrayList<Address>();
-                this.dataPointers[insertPos].add(address);
             }
-
-            if (key != this.keys[insertPos]) {
-                System.out.println("Inserted record into non full tree: " + key);
-                System.out.println("Inserted into position: " + this.keys[insertPos]);
-            }
-
-        } else { // leaf node is full, need to split
+    
+            // Insert the new key and update the data pointer
+            this.keys[insertPos] = key;
+            this.dataPointers[insertPos] = new ArrayList<>();
+            this.dataPointers[insertPos].add(address);
+    
+        } else { // Leaf node is full, need to split
             int insertPos = 0;
+    
+            // Find position for the key in the current node
             while (insertPos < Node.n && this.keys[insertPos] <= key) {
-                if (this.keys[insertPos] == key)
-                    break;
                 insertPos++;
             }
-
+    
             LeafNode rightChild = new LeafNode();
-            if (this.nextLeafNode != null)
-                rightChild.setNextLeafNode(this.nextLeafNode); // inserting the new node in between current node and
-                                                               // curent nextLeafNode
-            this.setNextLeafNode(rightChild);
-
-            int nValue = Node.n;
-            // distributing the keys from this node to the new rightChild node
-            if (nValue % 2 == 0) {
-                for (int i = (Node.n + 1) / 2, j = 0; i < Node.n; i++, j++) {
-                    rightChild.keys[j] = this.keys[i];
-                    rightChild.dataPointers[j] = this.dataPointers[i];
-                    this.keys[i] = Float.MAX_VALUE;
-                    this.dataPointers[i] = new ArrayList<Address>();
-                }
-                if (insertPos < (Node.n + 1) / 2) {
-                    this.insertRecord(address);
-                } else {
-                    rightChild.insertRecord(address);
-                }
-            } else {
-                // distributing the keys from this node to the new rightChild node
-                if (insertPos < (Node.n + 1) / 2) { // will be inserted into left node
-                    for (int i = (Node.n + 1) / 2 - 1, j = 0; i < Node.n; i++, j++) {
-                        rightChild.keys[j] = this.keys[i];
-                        rightChild.dataPointers[j] = this.dataPointers[i];
-                        if (rightChild.keys[j] != rightChild.dataPointers[j].get(0).getBlock()
-                                .getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home()) {
-                            System.out.println("key is : " + rightChild.keys[j]);
-                            System.out.println("first record is : " + rightChild.dataPointers[j].get(0).getBlock()
-                                    .getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home());
-                        }
-                        this.keys[i] = Float.MAX_VALUE;
-                        this.dataPointers[i] = new ArrayList<Address>();
-                    }
-                    this.insertRecord(address);
-                } else { // will be inserted into right node
-                    for (int i = (Node.n + 1) / 2, j = 0; i < Node.n; i++, j++) {
-                        rightChild.keys[j] = this.keys[i];
-                        rightChild.dataPointers[j] = this.dataPointers[i];
-                        if (rightChild.keys[j] != rightChild.dataPointers[j].get(0).getBlock()
-                                .getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home()) {
-                            System.out.println("mismatch in key and data");
-                            System.out.println("key is : " + rightChild.keys[j]);
-                            System.out.println("first record is : " + rightChild.dataPointers[j].get(0).getBlock()
-                                    .getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home());
-                        }
-                        this.keys[i] = Float.MAX_VALUE;
-                        this.dataPointers[i] = new ArrayList<Address>();
-                    }
-                    rightChild.insertRecord(address);
-                }
+            if (this.nextLeafNode != null) {
+                rightChild.setNextLeafNode(this.nextLeafNode); // Link to next node
             }
-
+            this.setNextLeafNode(rightChild);
+    
+            int mid = (Node.n + 1) / 2; // Determine mid point for splitting
+    
+            // Distributing keys and pointers
+            for (int i = mid; i < Node.n; i++) {
+                rightChild.keys[i - mid] = this.keys[i];
+                rightChild.dataPointers[i - mid] = this.dataPointers[i];
+                this.keys[i] = Float.MAX_VALUE; // Mark as empty
+                this.dataPointers[i] = null; // Clear data pointer
+            }
+    
+            // Insert the new address into the appropriate child
+            if (insertPos < mid) {
+                this.insertRecord(address);
+            } else {
+                rightChild.insertRecord(address);
+            }
+    
+            // Handle parent node creation or linking
             if (this.getParent() == null) {
                 InternalNode parentNode = new InternalNode();
                 this.setParent(parentNode);
